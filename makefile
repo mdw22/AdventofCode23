@@ -17,6 +17,7 @@ bin/day1.o : src/day1.cc
 
 day1 : bin/day1.o
 	$(link) $@ $^
+	./day1 inputday1.txt
 
 clean:
 	rm -f bin/* day1*
