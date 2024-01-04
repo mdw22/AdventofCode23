@@ -21,3 +21,4 @@ day1 : bin/day1.o
 
 clean:
 	rm -f bin/* day1*
+	rm -f bin/* day1gpt*
