@@ -31,21 +31,32 @@ int main(int argc, char** argv) {
         return 0;
     }
     
-    int RED_CUBES = 12;
-    int GREEN_CUBES = 13;
-    int BLUE_CUBES = 14;
+    // Hardcoded variables
+    static int RED_CUBES = 12;
+    static int GREEN_CUBES = 13;
+    static int BLUE_CUBES = 14;
+
+    // Return variables
     int RESULT = 0;
+    int POWER_RESULT = 0;
+
     std::vector<std::string> file = fileToVector(argv[1]);
     for(size_t i = 0; i < file.size(); ++i) {
         // Vector for cube list
         std::vector<Cube> cubeList;
+        std::vector<Cube> minCubeList;
 
         // Bool to store if cube list passes 
         bool pass = true;
 
+        // Min int for green, blue, red cubes
+        int min_green = 0;
+        int min_blue = 0; 
+        int min_red = 0;
+
         // First, find instance of : 
         int cur_index = file[i].find(':') + 2;
-        for(;cur_index < file[i].length() - 1; ++cur_index) {
+        for(;cur_index < file[i].length() - 1; cur_index+=2) {
             // Read in number
             int num = file[i][cur_index] - '0';
             cur_index++;
@@ -76,6 +87,10 @@ int main(int argc, char** argv) {
                 for(size_t j = 0; j < cubeList.size(); ++j) {
                     int color = cubeList[j].color;
                     int size = cubeList[j].size;
+                    if(!pass) {
+                        // pass has been set to false at least once
+                        break;
+                    }
                     switch (color)
                     {
                     case 0:
@@ -90,21 +105,41 @@ int main(int argc, char** argv) {
                     default:
                         break;
                     }
-                    if(!pass) {
-                        // pass has been set to false at least once
-                        break;
-                    }
+                }
+                // Add cubelist to min list
+                for(size_t j = 0; j < cubeList.size(); ++j) {
+                    minCubeList.push_back(Cube{.color = cubeList[j].color, .size = cubeList[j].size});
                 }
                 cubeList.clear();
             }
-            cur_index++;
-            if(!pass) {
+        }
+        // Check for min cubes
+        for(size_t j = 0; j < minCubeList.size(); ++j) {
+            int color = minCubeList[j].color;
+            int size = minCubeList[j].size;
+            switch (color)
+            {
+            case 0:
+                if(min_green == 0) min_green = size;
+                else if(size > min_green) min_green = size;
+                break;
+            case 1:
+                if(min_blue == 0) min_blue = size;
+                else if(size > min_blue) min_blue = size;
+                break;
+            case 2:
+                if(min_red == 0) min_red = size;
+                else if(size > min_red) min_red = size;
+                break;
+            default:
                 break;
             }
         }
         if(pass) {
             RESULT += (i + 1);
         }
+        POWER_RESULT += (min_green * min_blue * min_red);
     }
     std::cout << RESULT << std::endl;
+    std::cout << POWER_RESULT << std::endl;
 }
