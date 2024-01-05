@@ -12,12 +12,12 @@ link = $(cc) $(flags) -o  # final linked build to binary executable
 
 compile = $(cc) $(flags) -c -o  # compilation to intermediary .o files
 
-bin/day1.o : src/day1.cc
+bin/day3.o : src/day3.cc
 	$(compile) $@ $^
 
-day1 : bin/day1.o
+day3 : bin/day3.o
 	$(link) $@ $^
-	./day1 inputday1.txt
+	./day3 inputday3.txt
 
 clean:
-	rm -f bin/* day1*
+	rm -f bin/* day3*

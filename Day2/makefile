@@ -20,4 +20,4 @@ day2 : bin/day2.o
 	./day2 inputday2.txt
 
 clean:
-	rm -f bin/* day1*
+	rm -f bin/* day2*
