@@ -48,32 +48,15 @@ bool posCheck(int x, int y, std::vector<Coord> &coordList) {
     for(int i = 0; i < coordList.size(); ++i) {
         int symbol_x = coordList[i].x;
         int symbol_y = coordList[i].y;
-        if(x == symbol_x - 1 || x == symbol_x + 1) {
-            if(y == symbol_y - 1 || y == symbol_y || y == symbol_y + 1) {
-                return true;
-            }
-        }
-        else if(x == symbol_x) {
-            if(y == symbol_y - 1 || y == symbol_y + 1) {
-                return true;
-            }
+        if (std::abs(x - symbol_x) <= 1 && std::abs(y - symbol_y) <= 1) {
+            return true;
         }
     }
     return false;
 }
 
 bool gearCheck(int gear_x, int gear_y, int x, int y) {
-    if(x == gear_x - 1 || x == gear_x + 1) {
-        if(y == gear_y - 1 || y == gear_y || y == gear_y + 1) {
-            return true;
-        }
-    }
-    else if(x == gear_x) {
-        if(y == gear_y - 1 || y == gear_y + 1) {
-            return true;
-        }
-    }
-    return false;
+    return std::abs(x - gear_x) <= 1 && std::abs(y - gear_y) <= 1;
 }
 
 int main(int argc, char** argv) {
