@@ -28,9 +28,17 @@ int main(int argc, char** argv) {
     // Construct number until ' '
     // Add number to list, move forward
     int RESULT = 0;
+    int COPIES_RESULT = 0;
+    // Create copyList to store # of cards per line
+    // Populate with all 1's
+    int copyList[202];
+    for(int i = 0; i < 202; ++i) {
+        copyList[i] = 1;
+    }
     for(int i = 0; i < lines.size(); ++i) {
         std::string line = lines[i];
         std::vector<int> winning_numbers;
+        std::vector<int> won_numbers;
         int card_result = 0;
         for(int j = line.find(':') + 2; j < line.find('|') - 1; ++j) {
             char c = line[j];
@@ -69,11 +77,21 @@ int main(int argc, char** argv) {
             for(int k = 0; k < winning_numbers.size(); ++k) {
                 if(num == winning_numbers[k]) {
                     card_result = (card_result == 0) ? 1 : card_result << 1;
+                    won_numbers.push_back(num);
                     break;
                 }
             }
-        }
+        }  
         RESULT += card_result;
+        for(int j = 0; j < copyList[i]; ++j) {
+            for(int k = 0; k < won_numbers.size(); ++k) {
+                copyList[i + (k + 1)] += 1;
+            }
+        }
+    }
+    for(int i = 0; i < 202; ++i) {
+        COPIES_RESULT += copyList[i];
     }
     std::cout << RESULT << std::endl;
+    std::cout << COPIES_RESULT << std::endl;
 }
