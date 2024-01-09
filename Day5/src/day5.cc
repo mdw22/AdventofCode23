@@ -11,6 +11,10 @@ struct Seed {
     int64_t seed_id; 
 };
 
+int64_t convertMap(int64_t x, int64_t offset) {
+    return x - offset;
+}
+
 std::vector<std::string> fileToVector(const std::string &fileName) {
     std::vector<std::string> fileLines;
     std::string line;
@@ -31,8 +35,8 @@ int main(int argc, char** argv) {
     std::vector<std::string> fileLines = fileToVector(argv[1]);
 
     std::vector<Seed> seedList;
-    //Map of all maps
-    std::vector<std::vector<int64_t>> mapList;
+    //Map of all map relations
+    // TODO
     // Read and store seed ID's
     // Iterate through the first line after : to find numbers
     for(int i = fileLines[0].find(':') + 2; i < fileLines[0].length() - 1; ++i) {
@@ -52,12 +56,11 @@ int main(int argc, char** argv) {
     }
     // Build maps of every relation that is in the file
     // Then, filter every seed in seedList through it to get answer
-   std::unordered_map<int64_t, int64_t> current_map;
     for(int i = 1; i < fileLines.size(); ++i) {
         std::string line = fileLines[i];
         if(line.length() == 0 && i != 1) { // Blank line and not first line means it is end of a map
             // mapList.push_back(current_map);
-            current_map.clear();
+            // current_map.clear();
             continue;
         }
         else if(line[0] < '0' || line[0] > '9') continue;   // Word line
@@ -80,8 +83,11 @@ int main(int argc, char** argv) {
         int64_t destination_range_start = mapRanges[0];
         int64_t source_range_start = mapRanges[1];
         int64_t range_length = mapRanges[2];
+        int64_t offset = destination_range_start - source_range_start;
+        
         // f(t) = c + (d-c/b-a)*(t-a)
         // Use linear slop formula to convert
+        // y = mx - b
         
     }  
 
