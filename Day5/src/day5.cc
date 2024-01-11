@@ -26,6 +26,22 @@ struct Almanac {
         return x;
     }
 
+    int64_t reverseTransform(int64_t x) {
+        int64_t destination_start = 0;
+        int64_t source_start = 0;
+        int64_t range = 0;
+        for(int i = 0; i < ruleList.size(); ++i) {
+            std::tuple<int64_t, int64_t, int64_t> currentTuple = ruleList[i];
+            destination_start = std::get<1>(currentTuple);
+            source_start = std::get<0>(currentTuple);
+            range = std::get<2>(currentTuple);
+            if(x <= source_start + range && x >= source_start) {
+                return destination_start + (x - source_start);
+            }
+        }
+        return x;
+    }
+
     void clear() {
         ruleList.clear();
     }
@@ -51,11 +67,15 @@ int main(int argc, char** argv) {
     std::vector<std::string> fileLines = fileToVector(argv[1]);
 
     std::vector<int64_t> seedList;
+    // Vector for Part 2 answer
+    std::vector<std::tuple<int64_t, int64_t>> updatedSeedList;
     //Map of all map relations
     std::vector<Almanac> mapList;
     // TODO
     // Read and store seed ID's
     // Iterate through the first line after : to find numbers
+    bool second_num_flag = false;
+    int64_t first_num = 0;
     for(int i = fileLines[0].find(':') + 2; i < fileLines[0].length() - 1; ++i) {
         char c = fileLines[0][i];
         int64_t num = 0;
@@ -70,6 +90,14 @@ int main(int argc, char** argv) {
             c = fileLines[0][i];
         }
         seedList.push_back(num);
+        if(second_num_flag) {
+            updatedSeedList.push_back({first_num, num});
+            second_num_flag = false;
+        }
+        else {
+            first_num = num;
+            second_num_flag = true;
+        }
     }
     // Build maps of every relation that is in the file
     // Then, filter every seed in seedList through it to get answer
@@ -102,6 +130,7 @@ int main(int argc, char** argv) {
         if(i + 1 >= fileLines.size()) mapList.push_back(currentAlmanac);    // Last line
     }
 
+    // Part 1 answer
     int64_t lowest_num = -1;
     for(int64_t current_seed : seedList) {
         int64_t current_number = current_seed;
@@ -112,4 +141,38 @@ int main(int argc, char** argv) {
         else if(current_number < lowest_num) lowest_num = current_number;
     }
     std::cout << lowest_num << std::endl;
+
+    // Part 2 answer
+    int64_t next_lowest_num = -1;
+    int64_t index = 0; 
+    bool break_flag = false;
+    while(true) {
+        int64_t current_seed_value = index;
+        for(int i = mapList.size() - 1; i >= 0; --i) {
+            Almanac a = mapList[i];
+            current_seed_value = a.reverseTransform(current_seed_value);
+        }
+        // Found seed value for location index, check if present
+        for(int i = 0; i < updatedSeedList.size(); ++i) {
+            std::tuple<int64_t, int64_t> currentPair = updatedSeedList[i];
+            int64_t start = std::get<0>(currentPair);
+            int64_t range = std::get<1>(currentPair);
+            if(current_seed_value >= start && current_seed_value <= start + range) {
+                next_lowest_num = index;
+                break_flag = true;
+                break;
+            }
+        }
+        // If found, break
+        if(break_flag) break;
+        ++index;
+    }
+
+    int64_t temp = next_lowest_num;
+    for(int i = mapList.size() - 1; i >= 0; --i) {
+        Almanac a = mapList[i];
+        temp = a.reverseTransform(temp);
+    }
+    std::cout << temp << std::endl;
+    std::cout << next_lowest_num << std::endl;
 }
