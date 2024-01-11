@@ -36,6 +36,7 @@ int main(int argc, char** argv) {
 
     std::vector<Seed> seedList;
     //Map of all map relations
+    std::vector<std::map<int64_t, int64_t, int64_t>> mapList;
     // TODO
     // Read and store seed ID's
     // Iterate through the first line after : to find numbers
@@ -56,14 +57,15 @@ int main(int argc, char** argv) {
     }
     // Build maps of every relation that is in the file
     // Then, filter every seed in seedList through it to get answer
+    std::map<int64_t, int64_t, int64_t> currentMap; 
     for(int i = 1; i < fileLines.size(); ++i) {
         std::string line = fileLines[i];
         if(line.length() == 0 && i != 1) { // Blank line and not first line means it is end of a map
-            // mapList.push_back(current_map);
-            // current_map.clear();
+            mapList.push_back(currentMap);
+            currentMap.clear();
             continue;
         }
-        else if(line[0] < '0' || line[0] > '9') continue;   // Word line
+        else if(line[0] < '0' || line[0] > '9') continue;   // Word line or first blank line
         std::vector<int64_t> mapRanges;
         for(int j = 0; j < line.length(); ++j) {
             char c = line[j];
@@ -84,7 +86,7 @@ int main(int argc, char** argv) {
         int64_t source_range_start = mapRanges[1];
         int64_t range_length = mapRanges[2];
         int64_t offset = destination_range_start - source_range_start;
-        
+        currentMap
         // f(t) = c + (d-c/b-a)*(t-a)
         // Use linear slop formula to convert
         // y = mx - b
