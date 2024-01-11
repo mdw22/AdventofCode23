@@ -7,13 +7,18 @@ Code by Michael White, 2024
 #include <vector>
 #include <map> 
 
-struct Seed {
-    int64_t seed_id; 
-};
+struct Almanac {
+    std::map<int, int64_t, int64_t, int64_t> ruleList;
 
-int64_t convertMap(int64_t x, int64_t offset) {
-    return x - offset;
-}
+    int64_t transform(int64_t x) {
+        int64_t destination_start = 0;
+        int64_t source_start = 0;
+        int64_t range = 0;
+        for(const auto& [key, value1, value2, value3] : ruleList) {
+            
+        }
+    }
+};
 
 std::vector<std::string> fileToVector(const std::string &fileName) {
     std::vector<std::string> fileLines;
@@ -34,7 +39,7 @@ int main(int argc, char** argv) {
     }
     std::vector<std::string> fileLines = fileToVector(argv[1]);
 
-    std::vector<Seed> seedList;
+    std::vector<int64_t> seedList;
     //Map of all map relations
     std::vector<std::map<int64_t, int64_t, int64_t>> mapList;
     // TODO
@@ -53,7 +58,7 @@ int main(int argc, char** argv) {
             i++;
             c = fileLines[0][i];
         }
-        seedList.push_back(Seed{.seed_id = num});
+        seedList.push_back(num);
     }
     // Build maps of every relation that is in the file
     // Then, filter every seed in seedList through it to get answer
@@ -86,7 +91,7 @@ int main(int argc, char** argv) {
         int64_t source_range_start = mapRanges[1];
         int64_t range_length = mapRanges[2];
         int64_t offset = destination_range_start - source_range_start;
-        currentMap
+
         // f(t) = c + (d-c/b-a)*(t-a)
         // Use linear slop formula to convert
         // y = mx - b
