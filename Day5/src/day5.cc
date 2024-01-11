@@ -19,7 +19,7 @@ struct Almanac {
             destination_start = std::get<0>(currentTuple);
             source_start = std::get<1>(currentTuple);
             range = std::get<2>(currentTuple);
-            if(x <= source_start + range && x >= source_start) {
+            if(x < source_start + range && x >= source_start) {
                 return destination_start + (x - source_start);
             }
         }
@@ -35,7 +35,7 @@ struct Almanac {
             destination_start = std::get<1>(currentTuple);
             source_start = std::get<0>(currentTuple);
             range = std::get<2>(currentTuple);
-            if(x <= source_start + range && x >= source_start) {
+            if(x < source_start + range && x >= source_start) {
                 return destination_start + (x - source_start);
             }
         }
@@ -157,7 +157,7 @@ int main(int argc, char** argv) {
             std::tuple<int64_t, int64_t> currentPair = updatedSeedList[i];
             int64_t start = std::get<0>(currentPair);
             int64_t range = std::get<1>(currentPair);
-            if(current_seed_value >= start && current_seed_value <= start + range) {
+            if(current_seed_value >= start && current_seed_value < start + range) {
                 next_lowest_num = index;
                 break_flag = true;
                 break;
@@ -167,12 +167,5 @@ int main(int argc, char** argv) {
         if(break_flag) break;
         ++index;
     }
-
-    int64_t temp = next_lowest_num;
-    for(int i = mapList.size() - 1; i >= 0; --i) {
-        Almanac a = mapList[i];
-        temp = a.reverseTransform(temp);
-    }
-    std::cout << temp << std::endl;
     std::cout << next_lowest_num << std::endl;
 }
