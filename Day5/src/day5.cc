@@ -8,15 +8,26 @@ Code by Michael White, 2024
 #include <map> 
 
 struct Almanac {
-    std::map<int, int64_t, int64_t, int64_t> ruleList;
+    std::vector<std::tuple<int64_t, int64_t, int64_t>> ruleList;
 
     int64_t transform(int64_t x) {
         int64_t destination_start = 0;
         int64_t source_start = 0;
         int64_t range = 0;
-        for(const auto& [key, value1, value2, value3] : ruleList) {
-            
+        for(int i = 0; i < ruleList.size(); ++i) {
+            std::tuple<int64_t, int64_t, int64_t> currentTuple = ruleList[i];
+            destination_start = std::get<0>(currentTuple);
+            source_start = std::get<1>(currentTuple);
+            range = std::get<2>(currentTuple);
+            if(x <= source_start + range && x >= source_start) {
+                return destination_start + (x - source_start);
+            }
         }
+        return x;
+    }
+
+    void clear() {
+        ruleList.clear();
     }
 };
 
@@ -41,7 +52,7 @@ int main(int argc, char** argv) {
 
     std::vector<int64_t> seedList;
     //Map of all map relations
-    std::vector<std::map<int64_t, int64_t, int64_t>> mapList;
+    std::vector<Almanac> mapList;
     // TODO
     // Read and store seed ID's
     // Iterate through the first line after : to find numbers
@@ -62,12 +73,12 @@ int main(int argc, char** argv) {
     }
     // Build maps of every relation that is in the file
     // Then, filter every seed in seedList through it to get answer
-    std::map<int64_t, int64_t, int64_t> currentMap; 
+    Almanac currentAlmanac;  
     for(int i = 1; i < fileLines.size(); ++i) {
         std::string line = fileLines[i];
         if(line.length() == 0 && i != 1) { // Blank line and not first line means it is end of a map
-            mapList.push_back(currentMap);
-            currentMap.clear();
+            mapList.push_back(currentAlmanac);
+            currentAlmanac.clear();
             continue;
         }
         else if(line[0] < '0' || line[0] > '9') continue;   // Word line or first blank line
@@ -83,19 +94,22 @@ int main(int argc, char** argv) {
             }
             mapRanges.push_back(current_num);
         }
-        // MapRanges has 3 indices
-        // 0 is for destination_range_start
-        // 1 is for source_range_start
-        // 2 is for range_length
+        // MapRanges has 3 indices, 0 is for destination_range_start, 1 is for source_range_start, 2 is for range_length
         int64_t destination_range_start = mapRanges[0];
         int64_t source_range_start = mapRanges[1];
         int64_t range_length = mapRanges[2];
-        int64_t offset = destination_range_start - source_range_start;
+        currentAlmanac.ruleList.push_back({destination_range_start, source_range_start, range_length});
+        if(i + 1 >= fileLines.size()) mapList.push_back(currentAlmanac);    // Last line
+    }
 
-        // f(t) = c + (d-c/b-a)*(t-a)
-        // Use linear slop formula to convert
-        // y = mx - b
-        
-    }  
-
+    int64_t lowest_num = -1;
+    for(int64_t current_seed : seedList) {
+        int64_t current_number = current_seed;
+        for(Almanac current_almanac : mapList) {
+            current_number = current_almanac.transform(current_number);
+        }
+        if(lowest_num == -1) lowest_num = current_number;
+        else if(current_number < lowest_num) lowest_num = current_number;
+    }
+    std::cout << lowest_num << std::endl;
 }
