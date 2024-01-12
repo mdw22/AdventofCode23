@@ -63,4 +63,33 @@ int main(int argc, char** argv) {
         RESULT *= passing_values;
     }
     std::cout << RESULT << std::endl;
+
+    // Part 2 solution
+    int64_t newTime = 0;
+    int64_t newDistance = 0;
+    for(int i = 0; i < timeList.size(); ++i) {
+        newTime = (100 * newTime) + timeList[i];
+        if(distanceList[i] < 1000) {
+            newDistance = (1000 * newDistance) + distanceList[i];
+        }
+        else {
+            newDistance = (10000 * newDistance) + distanceList[i];
+        }
+    }
+    int64_t passing_range_start = 0;
+    for(int64_t i = 1; i < newTime; ++i) {
+        if(i * newTime - (i * i) > newDistance) {
+            passing_range_start = i;
+            break;
+        }
+    }
+    int64_t passing_range_end = 0;
+    for(int64_t i = newTime - 1; i > 1; --i) {
+        if(i * newTime - (i * i) > newDistance) {
+            passing_range_end = i;
+            break;
+        }
+    }
+    int64_t RESULT_2 = passing_range_end - passing_range_start + 1;
+    std::cout << RESULT_2 << std::endl;
 }
