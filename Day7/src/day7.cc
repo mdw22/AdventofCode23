@@ -32,5 +32,17 @@ int main(int argc, char** argv) {
     for(int i = 0; i < 14; ++i) {
         charValueMap[cardList[i]] = i + 1;
     }
-    std::cout << charValueMap['1'] << std::endl;
+    
+    for(std::string line : fileLines) {
+        // Read Card Value
+        for(int i = 0; i < line.find(' '); ++i) {
+            char c = line[i];
+            
+        }
+        // Read Bet Value
+        for(int i = line.find(' ') + 1; i < line.length(); ++i) {
+            char c = line[i];
+            
+        }
+    }
 }
